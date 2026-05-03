@@ -26,11 +26,18 @@ This project has two goals:
 | `introduction_verbatim.md` | Verbatim transcribed voice inputs for the introduction |
 | `introduction_claude.md` | Claude's structured responses to each introduction ramble |
 | `introduction_polished.md` | Final polished introduction (in progress) |
+| `introduction_reflections_verbatim.md` | Verbatim transcribed reflections on AI vs human problem-solving |
+| `introduction_reflections_claude.md` | Claude's responses to each reflection exchange |
+| `introduction_reference_notes_verbatim.md` | Verbatim captured reference/citation notes |
+| `introduction_reference_notes_claude.md` | Claude's responses to reference note exchanges |
 | `inspiration_vibe_physics.md` | Notes on Anthropic's "Vibe Physics" article by Matthew Schwartz |
 | `observations.md` | Workflow observations and discoveries |
 | `skills_created_here.md` | Index of skills created during this project |
 | `Telegram_calls.md` | Audit log of all Telegram exchanges |
+| `Terminal_image_calls.md` | Audit log of image-based terminal interactions |
 | `CLAUDE.md` | Project guidance for Claude Code sessions |
+| `literature_review/` | Background literature search on quaternionic NNs and PINNs |
+| `claude_sandbox/` | Isolated sandbox for Claude's independent PINN solving attempt |
 
 Audio versions (`.mp3`) of key documents are generated via `/audify-and-share` and shared on Google Drive.
 
@@ -46,7 +53,7 @@ Each paper section follows a 5-phase process:
 
 ## Skills Created
 
-Five globally-available [Claude Code](https://claude.ai/code) skills were built during this project:
+Seven globally-available [Claude Code](https://claude.ai/code) skills were built during this project:
 
 | Skill | Purpose |
 |-------|---------|
