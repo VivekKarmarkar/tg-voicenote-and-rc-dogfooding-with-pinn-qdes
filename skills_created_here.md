@@ -3,3 +3,5 @@
 3. verbatim-input-transcribed-from-tg-exchange
 4. claude-tool-output-from-tg-exchange
 5. tg-exchange-loop-extract
+6. tg-exchange-loop-slice-extract
+7. new-md-tg-exchange

@@ -55,6 +55,8 @@ Five globally-available [Claude Code](https://claude.ai/code) skills were built 
 | `verbatim-input-transcribed-from-tg-exchange` | Extract verbatim transcribed voice input |
 | `claude-tool-output-from-tg-exchange` | Extract Claude's reply text |
 | `tg-exchange-loop-extract` | Batch extract over a message range (composes the above) |
+| `tg-exchange-loop-slice-extract` | Incremental extraction, picking up from where the last extraction ended |
+| `new-md-tg-exchange` | Create the verbatim + claude file pair for a section |
 
 ## The 8 Rules
 
