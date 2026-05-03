@@ -1,14 +1,14 @@
 # Additional Context
 
-## 1. Data Preprocessing — Segment Stationary vs Non-Stationary Phases
+## 1. About PINNs: Karniadkis wrote a famous Nature Reviews PINN paper which augments his seminal PINN paper with Raissi and the point to note is there is no rigid definition of PINN other than incorporating Physics into NNs. Our approach aligns with the Raissi paper and is in spirit of the Nature Review paper - in other words, don't stick to some method from a paper BLINDLY - UNDERSTAND YOUR PROBLEM PROPERLY
 
-The rigid body has 3 IMU sensors attached at various orientations. The time series consists of alternating phases: stationary → movement → stationary → movement → stationary, etc.
+## 2. For Segment 23:
 
-- **Stationary** = zero angular velocity (from gyroscope data)
-- Extract the **non-stationary segments only**, with a small padding before and after each segment so the transition from stationary to movement (and back) is visible
-- Only produce PINN results for these non-stationary segments
+- The **first time point** of the extracted phase has a corresponding reference quaternion → use as the **initial condition**
+- The **last time point** of the extracted phase has a corresponding reference quaternion → use as a **boundary condition**
+- Together, these two reference quaternions at the endpoints form the BCs
 
-## 2. The Quaternionic Differential Equation — Use Gyroscope Data Only
+## 3. The Quaternionic Differential Equation — Use Gyroscope Data Only
 
 The quaternionic kinematic ODE is: **q̇ = ½ q ⊗ ω**
 
@@ -18,8 +18,4 @@ But the equation must be rearranged so that **ω is isolated on the left-hand si
 
 where q* is the quaternion conjugate.
 
-This means:
-- The PINN's neural network learns the quaternion trajectory q(t)
-- The derivative q̇(t) is obtained via automatic differentiation
-- The physics loss compares the reconstructed ω (from q and q̇) against the measured gyroscope data
-- **Only gyroscope data is used** — no accelerometer, no velocity increments, no orientation increments
+- **Only gyroscope data is used**

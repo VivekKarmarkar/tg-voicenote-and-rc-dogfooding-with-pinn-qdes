@@ -4,3 +4,5 @@
 *.log
 tmp/
 *.oga
+.venv/
+__pycache__/

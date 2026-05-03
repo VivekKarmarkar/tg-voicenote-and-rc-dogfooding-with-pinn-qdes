@@ -1,6 +1,6 @@
 # Rules of the Game
 
-## Rule 1: Laptop terminal is only used when Telegram voice notes and remote control cannot be used
+## Rule 1: Laptop terminal is only used when Telegram voice notes and remote control cannot be used or when phone needs to be charged
 
 The laptop terminal is a last resort. It is only allowed under these four conditions:
 
