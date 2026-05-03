@@ -12,6 +12,28 @@ The project doubles as a dogfooding experiment: all work is driven through Teleg
 
 Never modify, refactor, or "improve" existing working code, hooks, skills, or configurations. Under no circumstances. Always build new, clean, lean, modular things — one thing at a time, doing one thing well, strictly adhering to the Unix philosophy. Do not create monolithic anything. Do not ask whether to modify working systems. The answer is always no.
 
+## Strict Composition Enforcement
+
+When the user invokes a composed skill and includes "strictly," "for visibility," or similar phrasing, the composition must be followed step-by-step exactly as written — no shortcuts, no alternative paths, no improvisation, even if a more efficient route exists. Execute each composed sub-skill in sequence as specified. Claude is not always good at articulating what it did in a big spurt, and the user needs the composition followed to maintain collaborative visibility into what is happening.
+
+## Python Virtual Environments
+
+Always use project-specific virtual environments. Never install packages into global Python.
+
+- If a project already has a venv (`.venv/`, `venv/`, etc.), activate and use it.
+- If no venv exists, create one: `python3 -m venv .venv && source .venv/bin/activate`.
+- Always `pip install` inside the venv. Clean containers, one project, one environment. Unix philosophy.
+
+## GPU Usage
+
+Always use the laptop's NVIDIA GPU when available. Don't default to CPU when a GPU is sitting idle.
+
+1. Check GPU status: `nvidia-smi`
+2. If the GPU is occupied by another process and needs to be freed, ask the user before killing it.
+3. Set GPU environment variables as needed (e.g., `CUDA_VISIBLE_DEVICES`).
+4. Verify GPU is functional by running a quick test (e.g., PyTorch matmul on CUDA, check speed confirms GPU is connected).
+5. Then proceed with GPU-accelerated computation.
+
 ## Interaction Rules
 
 These rules govern how this project operates. Follow them strictly.
