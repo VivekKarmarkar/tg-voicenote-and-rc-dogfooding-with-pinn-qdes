@@ -10,11 +10,34 @@ This project has two goals:
 
 2. **Dogfood a voice-first workflow.** All work is driven from a phone — Telegram voice notes for context and direction, remote control slash commands for execution. No sitting at a desk. Claude is the sole writer and builder; Vivek directs verbally.
 
-## Key Findings
+## Key Results
 
-- Vanilla PINNs fail out of the box on quaternionic DEs due to **spectral bias**
-- **Wavelet scalograms** serve as a practical diagnostic for spectral bias
-- **Fourier features** + quaternionic neural network representation + custom quaternion ops in JAX + initial condition loss accounting for quaternions = working PINN extension to QDEs
+### Segment 23 — Gyro-Only Boundary Value Problem (PASS)
+
+The PINN solves the quaternionic kinematic ODE **ω = 2q\*⊗q̇** using only:
+- Measured angular velocity (gyroscope data, 720 samples at 200 Hz)
+- Two boundary quaternions (q_i, q_f) — no interior quaternion supervision
+
+**Max error: 0.0062 rad/s** (pass threshold: ±0.05 rad/s)
+
+### Architecture
+- MLP: [129, 512, 512, 256, 4] with tanh activations
+- Fourier features: 64 linearly spaced frequencies (scale 4.0)
+- Output: normalized unit quaternions
+- Framework: JAX with GPU (CUDA)
+
+### Training Strategy
+- **Phase 1** (15K epochs): BC-anchored (w_bc=500, w_omega=1, w_max=0)
+- **Phase 2** (30K epochs): Physics-focused (w_bc=100, w_omega=2, w_max=10)
+- **Phase 3** (20K epochs): Max-error refinement (w_bc=100, w_omega=2, w_max=50)
+
+### Novel Contribution: Soft L-infinity Penalty
+A max-error penalty term `mean(max(|ω_err| - threshold, 0)²)` stabilizes training and reduces max error by 35% (0.0062 vs 0.0096 without). Ablation study confirms the term prevents the optimizer from creating large local errors while minimizing global MSE.
+
+### Key Findings
+- Gyro-only BVP (no interior quaternion supervision) achieves 5x better accuracy than the supervised version
+- Hypothesis: quaternionic loss geometry conflicts with real-valued latent space and optimizer — the angular velocity formulation avoids this by comparing in R³
+- Linearly spaced Fourier features (not 2^L NeRF-style) resolve spectral bias for gyro signals
 
 ## Project Structure
 
@@ -22,24 +45,31 @@ This project has two goals:
 |------|---------|
 | `project_high_level_idea.md` | Three-point project summary |
 | `rules_of_the_game.md` | 8 rules governing the voice-first workflow |
+| `ROADMAP.md` | Multi-phase project roadmap |
 | `section_writing_strategy.md` | 5-phase pipeline: conversation → extraction → context → polish → final |
-| `introduction_verbatim.md` | Verbatim transcribed voice inputs for the introduction |
-| `introduction_claude.md` | Claude's structured responses to each introduction ramble |
-| `introduction_polished.md` | Final polished introduction (in progress) |
-| `introduction_reflections_verbatim.md` | Verbatim transcribed reflections on AI vs human problem-solving |
-| `introduction_reflections_claude.md` | Claude's responses to each reflection exchange |
-| `introduction_reference_notes_verbatim.md` | Verbatim captured reference/citation notes |
-| `introduction_reference_notes_claude.md` | Claude's responses to reference note exchanges |
+| `introduction_*.md` | Introduction drafts, verbatim transcripts, and Claude responses |
 | `inspiration_vibe_physics.md` | Notes on Anthropic's "Vibe Physics" article by Matthew Schwartz |
 | `observations.md` | Workflow observations and discoveries |
 | `skills_created_here.md` | Index of skills created during this project |
 | `Telegram_calls.md` | Audit log of all Telegram exchanges |
-| `Terminal_image_calls.md` | Audit log of image-based terminal interactions |
-| `CLAUDE.md` | Project guidance for Claude Code sessions |
 | `literature_review/` | Background literature search on quaternionic NNs and PINNs |
-| `claude_sandbox/` | Isolated sandbox for Claude's independent PINN solving attempt |
 
-Audio versions (`.mp3`) of key documents are generated via `/audify-and-share` and shared on Google Drive.
+### Claude Sandbox (`claude_sandbox/`)
+
+Isolated workspace for PINN solving — Claude's independent attempt at the problem.
+
+| File | Purpose |
+|------|---------|
+| `01_preprocess.py` | Extract non-stationary segments from raw IMU data |
+| `02_pinn.py` | Initial PINN implementation (with reference quaternions) |
+| `03_run_all.py` | Batch runner for all segments |
+| `04_solve_segment23.py` | Segment 23 solver with interior quaternion supervision |
+| `05_solve_segment23_pinn.py` | **True PINN**: gyro-only BVP solver (the working solution) |
+| `06_ablation_max_term.py` | Ablation study: with vs without max-error penalty |
+| `07_ablation_with_curves.py` | Ablation with training dynamics curves |
+| `problem-statement/` | Problem definition, BCs, and additional context |
+| `segments/` | Extracted segment data (gyro + time only) |
+| `results/` | Output plots (angular velocity overlays, ablation comparisons) |
 
 ## The Writing Pipeline
 
@@ -83,10 +113,11 @@ This project draws from [Vibe Physics: The AI Grad Student](https://www.anthropi
 ## Tech Stack
 
 - **Claude Code** — AI research collaborator and sole writer
-- **JAX** — Framework for custom quaternionic operations with autodiff compatibility
+- **JAX** — Quaternionic operations with autodiff, Fourier features, GPU-accelerated training
+- **Optax** — Optimizer (Adam with cosine decay schedules)
 - **Telegram** — Voice note channel with transcription pipeline
 - **Whisper** — Voice transcription
-- **PyTorch/JAX** — PINN implementation
+- **NVIDIA GPU** — CUDA-accelerated PINN training (~3 min per segment)
 
 ## License
 
