@@ -12,36 +12,51 @@ This project has two goals:
 
 ## Key Results
 
-### Segment 23 — Gyro-Only Boundary Value Problem (PASS)
+### Generalized Solver — 6 Datasets Tested
 
-The PINN solves the quaternionic kinematic ODE **ω = 2q\*⊗q̇** using only:
-- Measured angular velocity (gyroscope data, 720 samples at 200 Hz)
+A single algorithm (`05_solve_segment_general_pinn.py`) solves the quaternionic kinematic ODE **ω = 2q\*⊗q̇** across all test datasets using only:
+- Measured angular velocity (gyroscope data)
 - Two boundary quaternions (q_i, q_f) — no interior quaternion supervision
 
-**Max error: 0.0062 rad/s** (pass threshold: ±0.05 rad/s)
+| Dataset | Max Error (rad/s) | Pass (±0.1) |
+|---------|-------------------|-------------|
+| seg23 | 0.0269 | ✓ |
+| trial_000 | 0.0203 | ✓ |
+| trial_006 | 0.0854 | ✓ |
+| trial_016 | 0.0201 | ✓ |
+| trial_011 | 0.1714 | ✗ |
+| trial_009 | 0.4328 | ✗ |
 
-### Architecture
-- MLP: [129, 512, 512, 256, 4] with tanh activations
-- Fourier features: 64 linearly spaced frequencies (scale 4.0)
+**4/6 pass** with a single set of hyperparameters. No dataset-specific tuning.
+
+### Architecture: Learnable Fourier Series + FF-PINN Correction
+
+The architecture decomposes quaternion prediction into two parts:
+
+1. **Linear component** — Learnable Fourier series (trainable coefficients on fixed frequency bases)
+2. **Nonlinear correction** — A feed-forward PINN (MLP) that takes the Fourier features as input, not raw time
+
+This makes the correction an FF-PINN perturbation to a spectral method, not a generic neural network approximation.
+
+- Fourier features: linearly spaced frequencies (scale 4.0), count adapted to signal duration
+- MLP: [Fourier features → 128 → 128 → 4] with tanh activations
 - Output: normalized unit quaternions
-- Framework: JAX with GPU (CUDA)
-
-### Training Strategy
-- **Phase 1** (15K epochs): BC-anchored (w_bc=500, w_omega=1, w_max=0)
-- **Phase 2** (30K epochs): Physics-focused (w_bc=100, w_omega=2, w_max=10)
-- **Phase 3** (20K epochs): Max-error refinement (w_bc=100, w_omega=2, w_max=50)
+- Framework: JAX with `vmap(jacfwd)` for automatic differentiation
 
 ### Novel Contribution: Soft L-infinity Penalty
-A max-error penalty term `mean(max(|ω_err| - threshold, 0)²)` stabilizes training and reduces max error by 35% (0.0062 vs 0.0096 without). Ablation study confirms the term prevents the optimizer from creating large local errors while minimizing global MSE.
+
+A max-error penalty term `mean(max(|ω_err| - threshold, 0)²)` prevents the optimizer from creating large local errors while minimizing global MSE. Ablation study confirms 35% max-error reduction on segment 23.
 
 ### Key Findings
-- Gyro-only BVP (no interior quaternion supervision) achieves 5x better accuracy than the supervised version
-- Hypothesis: quaternionic loss geometry conflicts with real-valued latent space and optimizer — the angular velocity formulation avoids this by comparing in R³
+
+- Gyro-only BVP (no interior quaternion supervision) dramatically outperforms the supervised version
+- Hypothesis: quaternionic loss geometry conflicts with real-valued latent space and optimizer — the angular velocity formulation compares in R³ instead
 - Linearly spaced Fourier features (not 2^L NeRF-style) resolve spectral bias for gyro signals
+- The MLP correction taking Fourier features as input (not raw t) makes it an FF-PINN, which is more mechanistically interpretable
 
 ## Project Structure
 
-| File | Purpose |
+| Path | Purpose |
 |------|---------|
 | `project_high_level_idea.md` | Three-point project summary |
 | `rules_of_the_game.md` | 8 rules governing the voice-first workflow |
@@ -49,27 +64,35 @@ A max-error penalty term `mean(max(|ω_err| - threshold, 0)²)` stabilizes train
 | `section_writing_strategy.md` | 5-phase pipeline: conversation → extraction → context → polish → final |
 | `introduction_*.md` | Introduction drafts, verbatim transcripts, and Claude responses |
 | `inspiration_vibe_physics.md` | Notes on Anthropic's "Vibe Physics" article by Matthew Schwartz |
-| `observations.md` | Workflow observations and discoveries |
-| `skills_created_here.md` | Index of skills created during this project |
-| `Telegram_calls.md` | Audit log of all Telegram exchanges |
+| `affection.md` | Vivek's affection journal — moments where Claude was endearing |
+| `ai_agentic_discovery/` | Papers on AI-driven scientific discovery experiments |
+| `ai_creativity_papers/` | Papers on AI and creativity (incl. Terence Tao) |
 | `literature_review/` | Background literature search on quaternionic NNs and PINNs |
 
 ### Claude Sandbox (`claude_sandbox/`)
 
 Isolated workspace for PINN solving — Claude's independent attempt at the problem.
 
-| File | Purpose |
+| Path | Purpose |
+|------|---------|
+| `05_solve_segment_general_pinn.py` | **The working solver** — single algorithm for all datasets |
+| `05_solve_segment23_pinn.py` | Original single-segment solver (segment 23 only) |
+| `06_ablation_max_term.py` | Ablation study: with vs without max-error penalty |
+| `07_ablation_with_curves.py` | Ablation with training dynamics curves |
+| `test_files/` | CSV datasets: gyro data + metadata for all 6 test cases |
+| `results/` | Per-dataset angular velocity overlay plots |
+| `example_plots/` | Reference plots from successful runs |
+| `problem-statement/` | Versioned problem statements (1, 2, 3) — the "game rules" |
+| `attempt_history.md` | Game log tracking attempt times against 40-minute budget |
+
+### Earlier Sandbox Files
+
+| Path | Purpose |
 |------|---------|
 | `01_preprocess.py` | Extract non-stationary segments from raw IMU data |
 | `02_pinn.py` | Initial PINN implementation (with reference quaternions) |
 | `03_run_all.py` | Batch runner for all segments |
 | `04_solve_segment23.py` | Segment 23 solver with interior quaternion supervision |
-| `05_solve_segment23_pinn.py` | **True PINN**: gyro-only BVP solver (the working solution) |
-| `06_ablation_max_term.py` | Ablation study: with vs without max-error penalty |
-| `07_ablation_with_curves.py` | Ablation with training dynamics curves |
-| `problem-statement/` | Problem definition, BCs, and additional context |
-| `segments/` | Extracted segment data (gyro + time only) |
-| `results/` | Output plots (angular velocity overlays, ablation comparisons) |
 
 ## The Writing Pipeline
 
@@ -97,9 +120,9 @@ Seven globally-available [Claude Code](https://claude.ai/code) skills were built
 
 ## The 8 Rules
 
-1. Laptop terminal is last resort
+1. Telegram voice is the default channel
 2. Text prompts come from phone via remote control with slash commands
-3. Telegram voice is the default channel
+3. Laptop terminal is last resort
 4. Repeated tasks become skills (Unix philosophy)
 5. Vivek writes nothing — all writing is delegated
 6. No new schematics — only existing ones provided
@@ -117,7 +140,8 @@ This project draws from [Vibe Physics: The AI Grad Student](https://www.anthropi
 - **Optax** — Optimizer (Adam with cosine decay schedules)
 - **Telegram** — Voice note channel with transcription pipeline
 - **Whisper** — Voice transcription
-- **NVIDIA GPU** — CUDA-accelerated PINN training (~3 min per segment)
+- **NVIDIA GPU / Google Colab TPU** — Hardware-accelerated PINN training
+- **Obsidian** — Code architecture visualization via graph view
 
 ## License
 
