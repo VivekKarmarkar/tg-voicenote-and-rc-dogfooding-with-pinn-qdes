@@ -145,7 +145,6 @@ This project draws from:
 - **Telegram** — Voice note channel with transcription pipeline
 - **Whisper** — Voice transcription
 - **NVIDIA GPU / Google Colab TPU** — Hardware-accelerated PINN training
-- **Obsidian** — Code architecture visualization via graph view
 
 ## License
 
