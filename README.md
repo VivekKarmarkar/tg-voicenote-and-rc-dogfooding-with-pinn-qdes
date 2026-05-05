@@ -134,7 +134,7 @@ Eight globally-available [Claude Code](https://claude.ai/code) skills were built
 This project draws from:
 
 - [Vibe Physics: The AI Grad Student](https://www.anthropic.com/research/vibe-physics) by Matthew Schwartz (Harvard), who completed a theoretical physics paper using Claude — but goes further by making voice notes and mobile slash commands the *only* interface.
-- [Tips for Long-Running Claude Code Sessions](https://www.anthropic.com/engineering/claude-code-best-practices) — Anthropic's engineering insights on maintaining productive multi-hour sessions.
+- Tips for Long-Running Claude Code Sessions (Anthropic)
 - Papers on AI-driven scientific discovery (`ai_agentic_discovery/`)
 - Papers on AI and creativity (`ai_creativity_papers/`)
 
