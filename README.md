@@ -135,8 +135,8 @@ This project draws from:
 
 - [Vibe Physics: The AI Grad Student](https://www.anthropic.com/research/vibe-physics) by Matthew Schwartz (Harvard), who completed a theoretical physics paper using Claude — but goes further by making voice notes and mobile slash commands the *only* interface.
 - [Tips for Long-Running Claude Code Sessions](https://www.anthropic.com/engineering/claude-code-best-practices) — Anthropic's engineering insights on maintaining productive multi-hour sessions.
-- Papers on AI-driven scientific discovery (`ai_agentic_discovery/`) — experiments in optics and quantum mechanics where AI agents autonomously design and run lab experiments.
-- Papers on AI and creativity (`ai_creativity_papers/`) — including Terence Tao's perspective on AI in mathematics.
+- Papers on AI-driven scientific discovery (`ai_agentic_discovery/`)
+- Papers on AI and creativity (`ai_creativity_papers/`)
 
 ## Tech Stack
 
