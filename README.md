@@ -105,7 +105,7 @@ Each paper section follows a 5-phase process:
 
 ## Skills Created
 
-Nine globally-available [Claude Code](https://claude.ai/code) skills were built during this project:
+Eight globally-available [Claude Code](https://claude.ai/code) skills were built during this project:
 
 | Skill | Purpose |
 |-------|---------|
@@ -117,7 +117,6 @@ Nine globally-available [Claude Code](https://claude.ai/code) skills were built 
 | `tg-exchange-loop-slice-extract` | Incremental extraction, picking up from where the last extraction ended |
 | `new-md-tg-exchange` | Create the verbatim + claude file pair for a section |
 | `obsidian-code-viz` | Visualize a codebase as an Obsidian vault graph with wikilinked notes |
-| `obsidian-code-moc` | Create layered Map of Content notes for hierarchical code visualization |
 
 ## The 8 Rules
 
