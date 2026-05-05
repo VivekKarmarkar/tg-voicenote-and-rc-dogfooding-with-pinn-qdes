@@ -12,6 +12,11 @@ The project doubles as a dogfooding experiment: all work is driven through Teleg
 
 Never modify, refactor, or "improve" existing working code, hooks, skills, or configurations. Under no circumstances. Always build new, clean, lean, modular things — one thing at a time, doing one thing well, strictly adhering to the Unix philosophy. Do not create monolithic anything. Do not ask whether to modify working systems. The answer is always no.
 
+## PINN Sandbox Rules
+
+1. **DO NOT UNDER ANY CIRCUMSTANCES BREAK A SINGLE FUCKING THING WHICH WORKS.** If 5/6 datasets pass, changes must preserve that. No radical rewrites. Surgical fixes only.
+2. **Treat `claude_sandbox/problem-statement/modified_problem_statement_2.md` with EXTREME LEVELS OF RESPECT AND SERIOUSNESS.** Read it fully before every attempt. Follow every rule it states. User will not tolerate sloppiness — no approximations to autodiff, no case-specific hacks, no violations of stated constraints.
+
 ## Strict Composition Enforcement
 
 When the user invokes a composed skill and includes "strictly," "for visibility," or similar phrasing, the composition must be followed step-by-step exactly as written — no shortcuts, no alternative paths, no improvisation, even if a more efficient route exists. Execute each composed sub-skill in sequence as specified. Claude is not always good at articulating what it did in a big spurt, and the user needs the composition followed to maintain collaborative visibility into what is happening.
