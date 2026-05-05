@@ -52,7 +52,6 @@ A max-error penalty term `mean(max(|ω_err| - threshold, 0)²)` prevents the opt
 - Gyro-only BVP (no interior quaternion supervision) dramatically outperforms the supervised version
 - Hypothesis: quaternionic loss geometry conflicts with real-valued latent space and optimizer — the angular velocity formulation compares in R³ instead
 - Linearly spaced Fourier features (not 2^L NeRF-style) resolve spectral bias for gyro signals
-- The MLP correction taking Fourier features as input (not raw t) makes it an FF-PINN, which is more mechanistically interpretable
 
 ## Project Structure
 
@@ -106,7 +105,7 @@ Each paper section follows a 5-phase process:
 
 ## Skills Created
 
-Seven globally-available [Claude Code](https://claude.ai/code) skills were built during this project:
+Nine globally-available [Claude Code](https://claude.ai/code) skills were built during this project:
 
 | Skill | Purpose |
 |-------|---------|
@@ -117,6 +116,8 @@ Seven globally-available [Claude Code](https://claude.ai/code) skills were built
 | `tg-exchange-loop-extract` | Batch extract over a message range (composes the above) |
 | `tg-exchange-loop-slice-extract` | Incremental extraction, picking up from where the last extraction ended |
 | `new-md-tg-exchange` | Create the verbatim + claude file pair for a section |
+| `obsidian-code-viz` | Visualize a codebase as an Obsidian vault graph with wikilinked notes |
+| `obsidian-code-moc` | Create layered Map of Content notes for hierarchical code visualization |
 
 ## The 8 Rules
 
@@ -131,11 +132,15 @@ Seven globally-available [Claude Code](https://claude.ai/code) skills were built
 
 ## Inspiration
 
-This project draws from [Vibe Physics: The AI Grad Student](https://www.anthropic.com/research/vibe-physics) by Matthew Schwartz (Harvard), who completed a theoretical physics paper using Claude — but goes further by making voice notes and mobile slash commands the *only* interface.
+This project draws from:
+
+- [Vibe Physics: The AI Grad Student](https://www.anthropic.com/research/vibe-physics) by Matthew Schwartz (Harvard), who completed a theoretical physics paper using Claude — but goes further by making voice notes and mobile slash commands the *only* interface.
+- [Tips for Long-Running Claude Code Sessions](https://www.anthropic.com/engineering/claude-code-best-practices) — Anthropic's engineering insights on maintaining productive multi-hour sessions.
+- Papers on AI-driven scientific discovery (`ai_agentic_discovery/`) — experiments in optics and quantum mechanics where AI agents autonomously design and run lab experiments.
+- Papers on AI and creativity (`ai_creativity_papers/`) — including Terence Tao's perspective on AI in mathematics.
 
 ## Tech Stack
 
-- **Claude Code** — AI research collaborator and sole writer
 - **JAX** — Quaternionic operations with autodiff, Fourier features, GPU-accelerated training
 - **Optax** — Optimizer (Adam with cosine decay schedules)
 - **Telegram** — Voice note channel with transcription pipeline
