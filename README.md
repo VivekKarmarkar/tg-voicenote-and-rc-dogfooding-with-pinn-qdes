@@ -10,49 +10,6 @@ This project has two goals:
 
 2. **Dogfood a voice-first workflow.** All work is driven from a phone — Telegram voice notes for context and direction, remote control slash commands for execution. No sitting at a desk. Claude is the sole writer and builder; Vivek directs verbally.
 
-## Key Results
-
-### Generalized Solver — 6 Datasets Tested
-
-A single algorithm (`05_solve_segment_general_pinn.py`) solves the quaternionic kinematic ODE **ω = 2q\*⊗q̇** across all test datasets using only:
-- Measured angular velocity (gyroscope data)
-- Two boundary quaternions (q_i, q_f) — no interior quaternion supervision
-
-| Dataset | Max Error (rad/s) | Pass (±0.1) |
-|---------|-------------------|-------------|
-| seg23 | 0.0269 | ✓ |
-| trial_000 | 0.0203 | ✓ |
-| trial_006 | 0.0854 | ✓ |
-| trial_016 | 0.0201 | ✓ |
-| trial_011 | 0.1714 | ✗ |
-| trial_009 | 0.4328 | ✗ |
-
-**4/6 pass** with a single set of hyperparameters. No dataset-specific tuning.
-
-### Architecture: Learnable Fourier Series + FF-PINN Correction
-
-The architecture decomposes quaternion prediction into two parts:
-
-1. **Linear component** — Learnable Fourier series (trainable coefficients on fixed frequency bases)
-2. **Nonlinear correction** — A feed-forward PINN (MLP) that takes the Fourier features as input, not raw time
-
-This makes the correction an FF-PINN perturbation to a spectral method, not a generic neural network approximation.
-
-- Fourier features: linearly spaced frequencies (scale 4.0), count adapted to signal duration
-- MLP: [Fourier features → 128 → 128 → 4] with tanh activations
-- Output: normalized unit quaternions
-- Framework: JAX with `vmap(jacfwd)` for automatic differentiation
-
-### Novel Contribution: Soft L-infinity Penalty
-
-A max-error penalty term `mean(max(|ω_err| - threshold, 0)²)` prevents the optimizer from creating large local errors while minimizing global MSE. Ablation study confirms 35% max-error reduction on segment 23.
-
-### Key Findings
-
-- Gyro-only BVP (no interior quaternion supervision) dramatically outperforms the supervised version
-- Hypothesis: quaternionic loss geometry conflicts with real-valued latent space and optimizer — the angular velocity formulation compares in R³ instead
-- Linearly spaced Fourier features (not 2^L NeRF-style) resolve spectral bias for gyro signals
-
 ## Project Structure
 
 | Path | Purpose |
