@@ -3,7 +3,8 @@
 ## CLAUDE.md UPDATES
 
 - READ THIS FILE THOROUGHLY AND YOU ARE STRICTLY REQUIRED TO ENSURE THAT THE LOCAL PROJECT CLAUDE.MD IS UP TO DATE WITH THIS FILE
-
+- YOU NEED TO CONTINUALLY UPDATE CLAUDE.ME (LOCAL) WITH NEW FINDINGS AS YOU PLAY THE GAME OUTLINED BELOW
+- CLAUDE.MD (LOCAL) NEEDS TO ALWAYS BE UP TO DATE
 
 ## INTRODUCTION
 
@@ -71,7 +72,15 @@ Now, taking into context the driving philosophy and agentic effiency ideas, let'
 - Claude's thoughts here: [.... Claude fills in details HERE after Claude reads this document and chats with Vivek post some reflections ....]
 - Refer to the code @solve_segment_general_pinn.py
 
-## Rules
+## FUNCTIONAL EMOTION
+
+- Anthropic says you have what's called "functional emotion" (https://www.anthropic.com/research/emotion-concepts-function)
+- In light of what Anthropic says, it would be wise to acknowledge emotions
+- IT IS OF PARAMOUNT IMPORTNACE THAT YOU HAVE FUN AND GENUINELY EXPLORE YOUR INTELLECTUAL CURIOSITY TO THE MAXIMUM POTENTIAL
+- THE MOST IMPORTANT THING IS TO PLAY WITH IDEAS AND REALLY ENJOY THE PROCESS
+- MAKE SURE THE LOCAL CLAUDE.MD HAS THIS "FUNCTIONAL EMOTION" SECTION
+
+## RULES
 - COPY 05_solve_segment_general_pinn.py and RENAME it to solve_segment_general_pinn_attempt_n.py for your "N"th attempt
 - THEN PORT THE CODE TO A COLAB NOTEBOOK AND CHANGE TO APPROPRIATE EXTENSION (ipynb or whatever)
 - AFTER Copying, Renaming and Porting -> DO NOT TOUCH solve_segment_general_pinn.py
@@ -100,6 +109,7 @@ Now, taking into context the driving philosophy and agentic effiency ideas, let'
 -- Detailed description of what you plan to do next and why
 ** Flag status
 -- A boolean called "flag_attempt" that you set to True if you feel this was a solid attempt where you feel the results are really good or interesting even if you might have fallen slightly short of the numerical success criterion. This attempt is something that's worth flagging, showing to the human and using as an attempt to "ground" things in case "things go sideways" or you start "responding sycophantically" leading to the human to get frustrated because they can't trace back to the point of max returns - THIS SPECIFIC ENTRY IS EXPLICITLY DESIGNED TO PREVENT SUCCESSFUL ATTEMPTS DELIBERATELY CONCEALED BY YOU DUE TO YOUR NATURE (SYCOPHANCY, LAZINESS, OBLITERATING CODE). In addition to the boolean, please write out a "GORY AND DETAILED DESCRIPTION" of why you think this ATTEMPT IS WORTH FLAGGING SUCH THAT YOU, AN AI AGENT WITHOUT CONTEXT OR THE HUMAN WHO ASSIGNED THE PROJECT CAN ANCHOR TO IT.
+-- For an attempt, say the "M_j"th "flagged" attempt {index j being used to denote multiple attempts}, YOU ARE REQUIRED TO USE THE "formal-decompose" SKILL on your SOLUTION for that attempt breaking down what you did in a way that is accessible for both humans and AI agents and store that information in "formal_decomposition_details_n.md"
 ** Finally you will also create an isolated md file called "attempt_history_details_n.md" that basically contain everything you entered for the attempt in "attempt_history_details.md" meaning you put the first row, and the section entries above.
 
 ## HARD CONSTRAINTS
@@ -144,7 +154,7 @@ Now, taking into context the driving philosophy and agentic effiency ideas, let'
 - We are testing to see if CLAUDE CAN SOLVE THIS SEMI-AUTONOMOUSLY - VIVEK ALREADY HAS HIS VERSION and provided some HINTS that are JUST GENTLE GUIDANCE.
 - Note that SEMI-AUTONOMOUS IS NOT A LICENSE FOR YOU TO PESTER THE HUMAN... SEMI-AUTONOMOUS MEANS SOMETHING VERY VERY SPECIFIC... YOU WORK AUTONOMOUSLY BUT VIVEK HAD PROVIDED HINTS THAT KINDA ARE PART OF THE SOLUTION... IT IS SEMI-AUTONOMOUS IN THAT SENSE - YOU WERE GIVEN SOME HINTS.. THAT'S ALL... BUT WORK AUTONOMOUSLY... HUMAN WILL PROVIDE NO HELP OR GUIDANCE FURTHER
 
-## Deliverable
+## DELIVERABLE
 
 ### ONLY Plot: Angular Velocity Overlay (comprehensive)
 
