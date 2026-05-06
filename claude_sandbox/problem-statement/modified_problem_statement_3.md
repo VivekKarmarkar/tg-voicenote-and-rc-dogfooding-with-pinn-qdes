@@ -30,7 +30,7 @@ The PINN must estimate angular velocity components within ±0.1 rad/s envelopes 
 
 ## SCHEDULER WITH EVALUATION
 
-You will use Claude Code routines and/or ralph-loops during game time until the objective mentioned in the goal:
+### You will use Claude Code routines and/or ralph-loops during game time until the objective mentioned in the goal:
 - Official docs: https://code.claude.com/docs/en/routines
 - We will use "ask-claude-code-doc-agent" skill to get more info about routines
 - We will also use "niche-library-research" skill with the official Anthropic Claude Code docs page for more info: https://code.claude.com/docs/en/routines
@@ -38,6 +38,11 @@ You will use Claude Code routines and/or ralph-loops during game time until the 
 - Claude [fill in th blanks] after telegram voice session
 - After every attempt in the game (see details about attempts later in file), the scheduler will also use the "swarm" skill to spin up UNBIASED AND EFFICIENT AGENTS TO ASSESS YOUR WORK
 
+### Another option I really like and am use a lot is just the "loop" commands however I don't know how it compares with routines and ralph-loops. We will need to find out
+
+### FINAL AUTOMATION VERDICT
+- "loop", "ralph-loop", "routines" - which single one or some combination?
+- Claude [fill in the blanks] after telegram voice exchane
 
 ## VERIFICATION
 
