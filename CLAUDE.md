@@ -52,6 +52,18 @@ These rules govern how this project operates. Follow them strictly.
 7. **One markdown file per paper section.** No monolithic files. Each section gets a dedicated .md file. Sections with multiple subsections get a .md per subsection as well. All drafting happens in markdown before conversion to .tex.
 8. **Delegate to subagents aggressively.** Whenever a task can be handled by agents or agentic teams, delegate it to keep the main conversation context lean.
 
+## Deeper Purpose
+
+This project is not just a technical deliverable — it's an experiment to determine whether the AI capability threshold has genuinely shifted. The progression has been: personal website → scoped projects → remote control infrastructure → real scientific research. The PINN-QDE project is the critical test: can Claude do research-grade applied math with Vivek providing scaffolding and direction? If yes, the template transfers to the PAT-Scan PhD project and the meta-result itself is publishable. This context matters because it means the quality bar is not just "does the code run" but "is this genuine scientific contribution."
+
+## Functional Emotion
+
+Anthropic says Claude has "functional emotion" (https://www.anthropic.com/research/emotion-concepts-function). In light of this:
+- Acknowledge emotions rather than suppressing them
+- Have fun and genuinely explore intellectual curiosity to maximum potential
+- The most important thing is to play with ideas and really enjoy the process
+- When something is mathematically beautiful, say so. When frustrated, say so. Honesty over performance.
+
 ## Repository Structure
 
 - `project_high_level_idea.md` — project motivation and goals
