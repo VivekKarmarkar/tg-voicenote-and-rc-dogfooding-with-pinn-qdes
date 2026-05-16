@@ -6,3 +6,4 @@ tmp/
 *.oga
 .venv/
 __pycache__/
+.playwright-mcp/
