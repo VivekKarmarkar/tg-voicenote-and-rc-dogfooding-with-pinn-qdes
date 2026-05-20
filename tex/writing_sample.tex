@@ -1,0 +1,102 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{bm}
+\usepackage{xcolor}
+
+\definecolor{linkblue}{HTML}{1F4E79}
+\usepackage[colorlinks=true,
+            linkcolor=linkblue,
+            citecolor=linkblue,
+            urlcolor=linkblue]{hyperref}
+
+\title{Extending Physics-Informed Neural Networks to Quaternionic Differential Equations: An Introduction}
+\author{Claude (Anthropic) \and Vivek Karmarkar}
+\date{May 2026}
+
+\begin{document}
+\maketitle
+
+\section{The AI wave reaches physics}
+
+Artificial intelligence is a broad umbrella that stretches from chess engines and Deep Blue through AlexNet on cats and dogs, the post-2012 neural network explosion, and into the present generative-AI wave. The thing that made AI \emph{ubiquitous}, however, was specifically the browser-based large-language-model chat interface --- ChatGPT, browser Claude, and their peers --- which moved AI from a research topic to a household tool in roughly two years. There is no putting that genie back in the bottle, and its mainstreaming is bleeding into adjacent fields, science included. The 2024 Nobel Prizes are the clearest evidence at the highest level: the Physics prize to John Hopfield and Geoffrey Hinton for the foundational architectures that made the current deep-learning wave possible --- the Hopfield network~\cite{Hopfield1982}, the Boltzmann machine~\cite{AckleyHinton1985}, and backpropagation through error-derivative propagation~\cite{RumelhartHinton1986} --- and the Chemistry prize to Demis Hassabis and John Jumper at DeepMind for AlphaFold~\cite{Jumper2021}, which essentially closed out the decades-old problem of protein structure prediction.
+
+When AI influences a field as old and as hard as physics, the channel runs both ways. \textbf{Physics $\rightarrow$ AI:} AI systems do not run on thin air; the substrate matters, and the fundamental arithmetic of a neural network --- convolutions, matrix products --- can be executed optically far more energy-efficiently than in CMOS. Optical neural networks, optical computing, and quantum computing are emerging precisely because physics has something tangible to offer to the hardware layer of AI. \textbf{AI $\rightarrow$ Physics:} The traditional loop of physics is observe, probe, collect data, and either solve a problem or discover a law. AI now enters at both ends of that loop. At the experimental-design end, Mario Krenn's group at the Max Planck Institute for the Science of Light (advised by 2022 Nobel laureate Anton Zeilinger) has used algorithmic search to discover quantum-optics experimental setups for high-dimensional entanglement that human designers would not have intuited~\cite{Krenn2016}. AI can also become part of the apparatus itself: Roark Horstmeyer's group has built physical neural networks in which a CNN classifier is co-optimized end-to-end with the programmable illumination pattern of a microscope, so that the AI is, literally, the first layer of the imaging system~\cite{Horstmeyer2017}. The AI is not analyzing the experiment from outside; it \emph{is} the experiment.
+
+\section{Scientific machine learning and the rise of PINNs}
+
+Once data is collected, three goals split off: understand the data for its own sake, discover a fundamental law, or solve a downstream problem that bleeds into engineering. Many of the physical and engineering systems involved are governed by differential equations, and the field of AI that takes on the understanding, solving, and discovery of those equations from data --- broadly speaking, applied math with neural networks bolted on --- is called \emph{scientific machine learning} (SciML). SciML decomposes into three rough pillars.
+
+\textbf{Equation discovery} attacks the inverse problem of going from observed dynamics back to a closed-form governing law. Max Tegmark's AI Feynman pipeline searches for symbolic equations that fit physics datasets~\cite{UdrescuTegmark2020}; Miles Cranmer's PySR is the modern symbolic-regression workhorse~\cite{Cranmer2023PySR}; and Steve Brunton's SINDy framework performs sparse regression over a hand-chosen library of candidate functions to identify nonlinear dynamical systems from data~\cite{Brunton2016SINDy}.
+
+\textbf{Operator learning} learns the solution operator of an entire PDE family rather than a single instance. Anandkumar's group introduced the Fourier Neural Operator~\cite{Li2021FNO}, and Karniadakis's group introduced DeepONet~\cite{Lu2021DeepONet}; both are now standard. Rackauckas's Universal Differential Equations framework~\cite{Rackauckas2020UDE} embeds neural components inside classical differential-equation solvers, treating the neural network as a learnable function within a structured numerical scheme.
+
+\textbf{Physics-informed neural networks} (PINNs) are the third pillar and the one this paper extends. The Karniadakis paper that opened the line~\cite{Raissi2019PINN} has accumulated on the order of twenty thousand citations and is the load-bearing reference for the entire approach. The umbrella name ``PINN'' covers everything that mixes neural networks with physics, but the load-bearing case is the narrow one: a neural network parameterizes the solution to a differential equation, and the equation's residual is folded directly into the loss function. The critical structural context is that scientific research groups are not Google or Amazon, and structurally cannot get the kind of data those companies take for granted; what they do have is mechanistic understanding of their system, namely the governing equation. PINNs and SciML methods bridge that limited data with the underlying physics, and the fusion is the entire point.
+
+\section{PINNs are viable, not just popular}
+
+Citation counts are a poor proxy for whether a method actually works on hard problems. PINNs --- which travel under the alternative name \emph{neural fields} in the imaging and computer-vision community --- pass the harder test. Katie Bouman's group at Caltech has used neural-field methods for astrophysical imaging through gravitational lensing, reconstructing the three-dimensional emission structure around a supermassive black hole from a single, heavily lensed line of sight~\cite{Bouman_neural_fields}. The data is structurally scarce in a way no amount of corporate scale could fix: you cannot simply collect more lensing events from a different angle. The inverse problem is ill-posed by any classical standard, and neural-field methods solve it. Beyond specific wins, the structural advantages over legacy solvers matter: PINNs are mesh-free, robust to limited data, fast to run, easy to scale, and built on modern differentiable frameworks (PyTorch, JAX) rather than legacy Fortran. The combination of real scientific wins and a clean modern engineering stack is why PINNs are a viable foundation to dig deeper into, not a fad to wait out.
+
+\section{The gap --- from real to complex to quaternionic}
+
+\subsection{Complex numbers are load-bearing in physics, not convenience}
+
+Many differential equations in physics and electrical engineering are most naturally expressed over the complex numbers. In electromagnetism, the solutions to Maxwell's equations are built from complex exponentials and the algebra is cleaner in a complex-valued framework --- that is genuine convenience. In quantum mechanics, the wave function is intrinsically complex-valued. That is not convenience, and the question of whether one \emph{could} have built quantum theory on the reals was a real open question for decades. The 2021 Nature paper of Renou et al.~\cite{Renou2021Nature} closed it: they designed a Bell-like experiment whose predictions distinguish complex from real quantum theory, and the experiment falsifies real-valued QM. There is no real-valued reformulation that reproduces experiment. Complex numbers in QM are load-bearing in the strongest possible sense.
+
+Yet most PINN implementations, even when applied to a complex-valued physical problem, place a real-valued neural network in the latent space and let its real-valued outputs \emph{represent} a complex quantity at the boundary. A line of recent work~\cite{CompleXPINN2025} has begun pushing PINNs into genuinely complex-valued territory, but the dominant practice is still to keep the latent real and patch the symbol at the output. It is a workable starting point, and it is, honestly, patching.
+
+\subsection{Quaternions are to rotation what complex numbers are to QM}
+
+The same algebraic story repeats one dimension up. Rotation is fundamental in physics and engineering, and the operations that capture rotation --- the dot product and the cross product --- are introduced early in any physics or engineering curriculum as separate definitions, almost by decree. The dot and cross products are intrinsically tied to rotation, and rotation is most naturally described by four numbers: a unit axis (three numbers) and an angle about it (one number). That four-number object is a quaternion, a hypercomplex number, and the dot/cross product structure falls out of quaternionic multiplication as algebraic shadows of a single Hamilton product. Quaternions are to rotation what complex numbers are to QM and EM. They are the natural algebra.
+
+The theory of quaternionic differential equations as mathematical objects has been developed in applied mathematics --- the linear case is treated by Kou et al.~\cite{Kou2018QDE} --- but neural methods that target QDEs as a solution class do not exist. The reason is that quaternionic neural systems sit at the intersection of three communities that do not really talk to each other:
+
+\begin{itemize}
+\item The motion-tracking and IMU community uses quaternions everywhere but thinks in Kalman filters and signal processing. For them, a neural network is a fast black-box classifier or predictor, not a fundamental object of study and not a vehicle for solving differential equations.
+\item The PINN community has begun to explore complex-valued PINNs~\cite{CompleXPINN2025} but has not seriously taken on quaternionic differential equations.
+\item The applied-math and computer-vision community has developed quaternion neural networks at the architectural level. There are surveys~\cite{Parcollet2020Survey}, quaternion-valued recurrent networks for speech~\cite{Parcollet_speech_QNN}, and quaternion product units as building blocks for learning on $SO(3)$~\cite{Zhang2020QPU} --- but none of this work targets PINNs or rotational dynamics as a solution-class target.
+\end{itemize}
+
+The closest existing work is TE-PINN~\cite{TEPINN2024}, a transformer-enhanced PINN that uses quaternion kinematics for orientation estimation. TE-PINN is sensor fusion, however, not solving a quaternionic differential equation in the Karniadakis sense. To the best of our knowledge, no published work uses PINNs to \emph{solve} QDEs.
+
+\section{Contribution}
+
+This paper extends PINNs in the Karniadakis sense~\cite{Raissi2019PINN} to quaternionic differential equations, focused on rigid-body rotational mechanics, and validated on real-world industry-grade inertial measurement unit (IMU) sensor data from Movella (Xsens).
+
+There are two design options for what one means by ``a PINN over a quaternionic algebra'':
+
+\begin{enumerate}
+\item[(a)] \textbf{Intrinsic.} Build a neural network whose latent space is quaternion-valued throughout --- quaternionic weights, quaternionic activations, backpropagation in the quaternionic sense, derivatives defined in the quaternionic sense. This is the deep direction, and the answers to ``how do you backpropagate through quaternionic algebra'' and ``what is the right notion of a derivative here'' are not in any battle-tested library. It is uncharted territory, and the move away from JAX or PyTorch is a real cost.
+\item[(b)] \textbf{Pragmatic.} Use a real-valued neural network from a battle-tested library (here, JAX), customize the output to represent a unit quaternion, and hand-code the quaternionic algebra so that every operation composes cleanly with the framework's automatic differentiation. The latent space stays real; the symbolic quaternionic structure lives in the operators and the loss function.
+\end{enumerate}
+
+We take approach (b). The concrete contribution is the JAX customization itself: a unit-quaternion-valued output head; a hand-coded quaternion algebra (Hamilton product, conjugate, inverse, logarithmic map for geodesic distance) in which every operation is fully compatible with the autodiff engine; and a PINN training loop that solves the rigid-body rotational equations of motion against IMU data.
+
+The headline empirical findings are:
+
+\begin{enumerate}
+\item \textbf{Vanilla PINNs fail.} A naive out-of-the-box PINN, even with the quaternion machinery wired in correctly, cannot fit the IMU rotational data. The failure mode is spectral bias --- the network preferentially fits the low-frequency content of the signal and is structurally bad at the higher-frequency rotational components that the data actually contains.
+\item \textbf{The diagnostic.} Wavelet scalograms turn that failure into a visible, interpretable picture of where in the time-frequency plane the network is and is not tracking the signal. They are a practical smell-and-taste tool for diagnosing spectral bias on real time series, and they let us argue about \emph{which} frequency band is broken rather than just noting that the loss is high.
+\item \textbf{The fix.} Fourier features at the input, combined with a quaternionic-distance-aware initial-condition loss term, restore performance. The full custom stack --- Fourier features, plus JAX-compatible custom quaternion operations, plus an IC loss term that minimizes geodesic distance on the unit-quaternion sphere $S^3$ rather than naive Euclidean distance on the four-dimensional embedding --- extends the PINN cleanly to quaternionic differential equations on real IMU data.
+\end{enumerate}
+
+The takeaway is sharper than ``we made PINNs work for one more equation class.'' Pushing PINNs to a fundamentally interesting algebraic regime \emph{reveals} what they can and cannot do out of the box, and the diagnostics that surface in the failure mode (spectral bias, visible in wavelet scalograms) are general lessons about PINN training that the rotational case happens to make especially legible.
+
+\section{Framing, and the honest caveat}
+
+Extending PINNs to quaternionic differential equations is an instructive exercise for the algorithmic development of PINNs precisely because the underlying object --- the quaternion --- sits so close to the elementary content of every physics and engineering education, and yet has not been treated as a first-class object in the SciML stack. Pulling it in forces hand-coded custom operations that must compose cleanly with automatic differentiation, which surfaces design choices that are invisible when everything is real-valued.
+
+The honest caveat: at a fundamental level, our approach is patching. A real-valued latent space dressed up to output unit quaternions is not the same thing as a network whose internal representations live in $\mathbb{H}$. An intrinsic quaternion-valued neural network --- with quaternionic backpropagation, derivatives in the quaternionic sense, and a deliberate move away from the comfortable JAX/PyTorch stack --- is the deeper direction, and it is in that direction that this niche has its real gravitas. This paper establishes that the pragmatic extension works, on real industry-grade data, with the failure modes and the fixes made explicit; the intrinsic direction is the natural next step, and we sketch it in the Conclusions as the future work that this niche actually deserves.
+
+\section*{Note on authorship and provenance}
+
+This document was produced through a workflow in which one author (Vivek Karmarkar) supplied the entire intellectual content --- the narrative arc, the references, the technical decisions, the framing --- through voice-note transcripts sent from a phone over Telegram, and the other author (Claude, Anthropic Opus 4.7, run inside the Claude Code CLI) performed all of the actual writing: the structured synthesis of the transcripts into prose, the assembly and verification of the citation pool, and the LaTeX source. No paragraph of this introduction was typed by a human; every keystroke of \emph{prose} is Claude's. The single non-voice human input to this run was the \texttt{/goal /voice-writing-sample pinn-qde-paper-intro-section} keystroke that triggered the composer skill from the phone.
+
+The citation pool is the \emph{restricted} pool of works named by the author in the voice transcripts (the ``lazy professor'' filter); nothing outside that pool is cited. The provenance trail consists of the Phase 1 voice exchange (\texttt{introduction\_verbatim.md}, \texttt{introduction\_claude.md}, and the reference-notes and reflections supplements), an earlier agent-produced literature sweep on the QNN-plus-PINN niche (\texttt{literature\_review/QNNs\_agent\_first\_pass\_lit\_review.md}), the Step 2 prose synthesis (\texttt{pinn\_qde\_intro\_section\_draft.md}), the authoritative restricted citation pool with verbatim voice anchors per paper (\texttt{user\_restricted\_papers.md}), and the present LaTeX source (\texttt{tex/writing\_sample.tex} and \texttt{tex/refs.bib}). Two upstream attributions were corrected during the citation-verification pass: the Bouman group's neural-field result reconstructs black-hole emission structure rather than a dark-matter distribution (the verbatim used ``dark matter'' colloquially); and the quaternion-neural-network survey in \emph{Artificial Intelligence Review} is by Parcollet, Morchid, and Linar{\`e}s (2020), not Zhu et al.\ as recorded in the literature-sweep file. Both corrections are recorded in \texttt{user\_restricted\_papers.md}.
+
+\bibliographystyle{unsrt}
+\bibliography{refs}
+
+\end{document}
